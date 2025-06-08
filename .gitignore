@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Development database
+data.db
