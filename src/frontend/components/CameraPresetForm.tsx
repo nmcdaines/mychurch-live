@@ -6,11 +6,7 @@ import {
   Typography,
   IconButton,
   Fab,
-  Dialog,
-  DialogTitle,
-  DialogContent, DialogContentText,
   TextField,
-  Button,
   DialogActions,
   Box,
   Paper,
@@ -22,60 +18,54 @@ import {
   FormControl,
   InputLabel,
 } from "@material-ui/core";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import AddIcon from "@material-ui/icons/Add";
 import { Formik, FieldArray } from "formik";
+import { Button } from "@/components/ui/button";
 
 const defaultTextFieldProps: any = {
   fullWidth: true,
   variant: "outlined",
   margin: "dense",
-}
+};
 
 interface ICameraPresetCreateFormProps {
-  isOpen: boolean,
+  isOpen: boolean;
 
-  initialValues: any,
+  initialValues: any;
   onSubmit: any;
   onCancel: any;
 }
 
-export const CameraPresetForm: React.FC<ICameraPresetCreateFormProps> = (props) => {
+export const CameraPresetForm: React.FC<ICameraPresetCreateFormProps> = (
+  props,
+) => {
   return (
-    <Dialog
-      open={props.isOpen}
-      fullWidth
-      maxWidth="sm"
-    >
-      <DialogTitle>
-        Create Preset
-        </DialogTitle>
+    <Dialog open={props.isOpen}>
+      <DialogContent>
+        <DialogTitle>Create Preset</DialogTitle>
 
-
-      <Formik
-        initialValues={props.initialValues}
-        onSubmit={props.onSubmit}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-        }) => {
-
-          console.log(values);
-
-          const steps = values.steps || [];
-
-          return (
-            <form onSubmit={handleSubmit}>
-              <DialogContent>
-                <DialogContentText>
-                  Save the current Pan/Tilt/Zoom position as a Macro that can be recalled later
-                  from the Camera settings or via other Macros.
-                </DialogContentText>
+        <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+          }) => {
+            return (
+              <form onSubmit={handleSubmit}>
+                <DialogDescription>
+                  Save the current Pan/Tilt/Zoom position as a Macro that can be
+                  recalled later from the Camera settings or via other Macros.
+                </DialogDescription>
                 <TextField
                   {...defaultTextFieldProps}
                   label="Name"
@@ -97,15 +87,20 @@ export const CameraPresetForm: React.FC<ICameraPresetCreateFormProps> = (props) 
                     multiline
                   />
                 </Box>
-              </DialogContent>
-              <DialogActions>
-                <Button color="primary" onClick={props.onCancel}>Cancel</Button>
-                <Button color="primary" type="submit">Save</Button>
-              </DialogActions>
-            </form>
-          )
-        }}
-      </Formik>
+                <DialogActions>
+                  <Button color="primary" onClick={props.onCancel}>
+                    Cancel
+                  </Button>
+                  <Button color="primary" type="submit">
+                    Save
+                  </Button>
+                </DialogActions>
+              </form>
+            );
+          }}
+        </Formik>
+      </DialogContent>
     </Dialog>
   );
-}
+};
+
