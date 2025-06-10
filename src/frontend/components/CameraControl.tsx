@@ -16,9 +16,6 @@ const getNumber = (val: any) => {
 
 function CameraControl({ pan, setPan, tilt, setTilt, zoom, setZoom }: any) {
     
-
-    const socket = useSocket();
-
     const handlePanChange = (event: any, newValue: number | number[]) => {
         setPan(getNumber(newValue));
     }

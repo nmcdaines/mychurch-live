@@ -1,29 +1,39 @@
 import React from 'react';
-import { Container, Grid, Drawer, Card, CardHeader, CardContent, Typography } from '@material-ui/core';
+import { Container, Grid, Drawer, Typography } from '@material-ui/core';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { useDrag } from 'react-dnd';
 
 export function MacroDraggableCard(props: any) {
   const [collectedProps, drag] = useDrag({
-    item: { id: props.id, type: 'macro' }
+    type: 'macro',
+    item: { id: props.id }
   });
 
   return (
     <div ref={drag}>
-      <Card style={{ minHeight: 220 }}>
-        <CardHeader
-          title={props.name}
-          subheader={props.type === 'camera' && 
-            <>
+      <Card className='min-h-42 max-w-full'>
+        <CardHeader>
+          <CardTitle>
+            {props.name}
+          </CardTitle>
+          { props.type === 'camera' && (
+            <CardDescription>
+            <div>
               Pan: { (props.macro?.steps[0]?.properties?.pan || props.macro?.steps[1]?.properties?.pan) || 0 },
               Tilt: { props.macro?.steps[0]?.properties?.tilt || props.macro?.steps[1]?.properties?.tilt || 0 },
               Zoom: { ((10 / 16384) * (props.macro?.steps[0]?.properties?.zoom || props.macro?.steps[1]?.properties?.zoom || 0)).toFixed(1) }x
-            </>
-          }
-        />
+            </div>
+            </CardDescription>
+          )}
+        </CardHeader>
         <CardContent>
-          <Typography variant="body1" color="textSecondary" component="p">
-            { props.macro?.description }
-          </Typography>
+          { props.macro?.description }
         </CardContent>
       </Card>
     </div>

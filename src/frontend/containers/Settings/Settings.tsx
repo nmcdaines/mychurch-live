@@ -3,7 +3,7 @@ import {createStyles, Grid, Theme, makeStyles, Paper} from "@material-ui/core"
 
 import SettingsNavigation from "../../components/SettingsNavigation";
 
-import { Routes, Route, useMatch, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useMatch, useLocation, Navigate, Outlet } from "react-router-dom";
 import SettingsDevices from "./SettingsDevices";
 import Macros from './Macros';
 
@@ -24,28 +24,16 @@ function Settings() {
   const basePath = match ? match.pathnameBase : "/settings";
 
   return (
+    <>
       <Grid container className={classes.root}>
         <Grid item md={3}>
-          {/* <Route path={`${basePath}/:settingId`}> */}
-            {/* <SettingsNavigation /> */}
-          {/* </Route> */}
+          <SettingsNavigation />
         </Grid>
         <Grid item md={9}>
-          {/* <Route path={basePath} element={<Navigate to={`${basePath}/devices`} state={{ from: location }} replace />} /> */}
-          {/* <Route path={`${basePath}/devices`}>
-            <SettingsDevices />
-          </Route> */}
-          {/* <Route path={`${basePath}/livestream`}>
-            Livestream
-          </Route> */}
-          {/* <Route path={`${basePath}/macros`}>
-            <Macros />
-          </Route> */}
-          {/* <Route path={`${basePath}/shortcuts`}>
-            Shortcuts
-          </Route> */}
+          <Outlet />
         </Grid>
       </Grid>
+    </>
   );
 }
 

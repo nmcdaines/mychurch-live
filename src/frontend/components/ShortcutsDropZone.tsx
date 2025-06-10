@@ -36,7 +36,7 @@ export function ShortcutsDropZone(props: any) {
     return (
       <div
         ref={drop}
-        style={{ width: '100%', height: '100%', minHeight: 200, border: '2px dashed rgba(0,0,0,0.12)', borderRadius: 8}}
+        style={{ width: '100%', height: '100%', minHeight: 170, border: '2px dashed rgba(0,0,0,0.12)', borderRadius: 8}}
       >
         { props.slot }
       </div>
@@ -47,7 +47,7 @@ export function ShortcutsDropZone(props: any) {
   const steps = macro.steps || [];
 
   return (
-    <Card style={{ width: '100%', height: '100%', minHeight: 200 }}>
+    <Card style={{ width: '100%', height: '100%', minHeight: 170 }}>
       <CardHeader
         title={macro.name}
         subheader={macro.type === 'camera' && 

@@ -13,6 +13,7 @@ import AppsIcon from '@material-ui/icons/Apps';
 
 
 import { Link, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function ListItemLink(props: ListItemProps<Link, { button?: true, to: string }>) {
-  return <ListItem button component={Link} {...props} />;
+  return <Link to={props.to}>
+    <Button variant="secondar" className="w-full">
+      {props.children}
+    </Button>
+    </Link>;
 }
 
 function SettingsItem({name, icon, onClick}: any) {
@@ -53,8 +58,6 @@ function SettingsItem({name, icon, onClick}: any) {
 
 export default function SettingsNavigation() {
   const classes = useStyles();
-
-
 
   return (
     <div className={classes.root}>

@@ -6,8 +6,10 @@ import AddIcon from '@material-ui/icons/Add';
 import DeviceCard from "../../components/DeviceCard";
 
 function SettingsDevices() {
-  const atemState = useDevices();
-  const devices = Object.keys(atemState);
+  // const atemState = useDevices();
+  // const devices = Object.keys(atemState);
+
+  const { data: devices } = useDevices()
 
   console.log(devices);
 
@@ -15,56 +17,17 @@ function SettingsDevices() {
     <div>
       <Grid container spacing={2}>
         <Grid item md={8}>
-          { devices.map((deviceId: string) => {
-
+          { devices?.map((device) => {
             return (
-              <div key={`device-card-${deviceId}`} style={{ marginBottom: 20, }}>
-                 <DeviceCard
-                    productIdentifier={deviceId}
-                    device={atemState[deviceId]}
-                 />
+              <div key={`device-card-${device.id}`} className="mb-5">
+                <DeviceCard
+                  productIdentifier={device.id}
+                  device={device}
+                />
               </div>
             );
           })}
-
-          {/*{ devices.map((device: any) => {*/}
-
-          {/*  return (*/}
-          {/*    <DeviceCard />*/}
-          {/*  );*/}
-          {/*})}*/}
-
-
         </Grid>
-        {/* <Grid item md={4}>
-          <Paper>
-            <List
-              subheader={
-                <ListSubheader component="div">
-                  <span>Discover Devices</span>
-                  <Button>Update</Button>
-                </ListSubheader>
-              }
-            > */}
-              {/*{discovery.map((device: any) => {*/}
-
-              {/*  return (*/}
-              {/*    <ListItem key={`discovered-item-${device.ip}`}>*/}
-              {/*      <ListItemText*/}
-              {/*        primary={device.ip}*/}
-              {/*        secondary="Manufacturer"*/}
-              {/*      />*/}
-              {/*      <ListItemSecondaryAction>*/}
-              {/*        <IconButton edge="end" aria-label="add">*/}
-              {/*          <AddIcon />*/}
-              {/*        </IconButton>*/}
-              {/*      </ListItemSecondaryAction>*/}
-              {/*    </ListItem>*/}
-              {/*  )*/}
-              {/*})}*/}
-            {/* </List>
-          </Paper>
-        </Grid> */}
       </Grid>
     </div>
   );

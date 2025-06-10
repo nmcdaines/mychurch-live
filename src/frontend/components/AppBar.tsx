@@ -1,7 +1,6 @@
-import {createStyles, makeStyles, Theme, AppBar, Toolbar, Typography} from "@material-ui/core";
+  import {createStyles, makeStyles, Theme, AppBar, Toolbar, Typography} from "@material-ui/core";
 import { Button } from "@/components/ui/button";
 import {Link} from "react-router-dom";
-import { useIsConnected } from '../core/SocketContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,14 +44,13 @@ const links = [
 
 export default function () {
   const classes = useStyles();
-  const isConnected = useIsConnected();
 
   return (
     <AppBar position="static" className={classes.root}>
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
+        <div className="text-lg flex-grow">
           MyChurch Live
-        </Typography>
+        </div>
 
         <div className="space-x-2">
           { links.map((link) => (
@@ -62,21 +60,13 @@ export default function () {
             <Button
               key={`menu-link-${link.text}`}
               color="inherit"
+              size="sm"
             >
               { link.text }
             </Button>
             </Link>
           ))}
         </div>
-
-
-        <div className={classes.actionArea}>
-          <Button variant="ghost">
-            <span className={ isConnected ? classes.connected : classes.disconnected }/>
-            { isConnected ? 'Connected' : 'Disconnected' }
-          </Button>
-        </div> 
-
       </Toolbar>
     </AppBar>
   )

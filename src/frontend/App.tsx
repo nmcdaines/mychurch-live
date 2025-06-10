@@ -16,73 +16,40 @@ import CameraContainer from "./containers/Camera";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Home from './Home';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import SettingsDevices from './containers/Settings/SettingsDevices';
+import Macros from './containers/Settings/Macros';
 
+const queryClient = new QueryClient()
 
 function App() {
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="App">
-        <Router>
-          <AppBar />
-
-          <Routes>
-            <Route path="" element={<Home />} />
-            <Route path="/shortcuts" element={<ShortcutsContainer />} />
-            <Route path="/surface" element={<SurfaceContainer />} />
-            <Route path="/settings" element={<SettingsContainer />} />
-            <Route path="/livestream" element={<LivestreamContainer />} />
-            <Route path="/camera" element={<CameraContainer />} />
-          </Routes>
-        </Router>
-
-
-        <div>
-
-
-          {/* <Container style={{ marginTop: 20 }}>
-            <Paper>
-              <Box p={2}>
-
-                <Box>
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    value={messageType}
-                    onChange={(e) => setMessageType(e.target.value)}
-                    placeholder="Message Type"
-                    label="Type"
-                  />
-                </Box>
-                <Box mt={2}>
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    multiline
-                    value={messageBody}
-                    onChange={(e) => setMessageBody(e.target.value)}
-                    placeholder="Body"
-                    label="Body"
-                  />
-                </Box>
-                <Box mt={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      console.log('connect message');
-                      socket?.emit(messageType, JSON.parse(messageBody));
-                    }}
-                  >
-                    Send
-                  </Button>
-                </Box>
-              </Box>
-            </Paper>
-          </Container> */}
-
+    <QueryClientProvider client={queryClient}>
+      <DndProvider backend={HTML5Backend}>
+        <div className="App">
+          <Router>
+            <AppBar />
+            <Routes>
+              <Route path="" element={<Home />} />
+              <Route path="/shortcuts" element={<ShortcutsContainer />} />
+              <Route path="/surface" element={<SurfaceContainer />} />
+              <Route path="/settings" element={<SettingsContainer />}>
+                <Route path="" element={<>Please select a settings</>} />
+                <Route path="devices" element={<SettingsDevices />} />
+                <Route path="livestream" element={<>Livestream</>} />
+                <Route path="macros" element={<Macros />} />
+                <Route path="shortcuts" element={<>Shortcuts</>} />
+              </Route>
+              <Route path="/livestream" element={<LivestreamContainer />} />
+              <Route path="/camera" element={<CameraContainer />} />
+            </Routes>
+          </Router>
         </div>
-      </div>
-    </DndProvider>
+      </DndProvider>
+    </QueryClientProvider>
   );
 }
 

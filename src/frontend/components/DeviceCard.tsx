@@ -1,8 +1,8 @@
-import React from "react";
-import { Card, CardHeader, Avatar, IconButton, CardMedia, CardContent, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardAction, CardFooter } from "@/components/ui/card";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { red } from '@material-ui/core/colors';
+import { Button } from "@/components/ui/button";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,17 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
 function DeviceCard({ productIdentifier, device }: any) {
   const classes = useStyles();
 
-return (
+  return (
     <Card className={classes.root}>
-      <CardHeader
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={device.name}
-        subheader={device.ip}
-      />
+      <CardHeader>
+        <CardTitle>{device.name}</CardTitle>
+        <CardDescription>{device.ipAddress}</CardDescription>
+      </CardHeader>
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           <div>
@@ -49,6 +44,9 @@ return (
           </div>
         </Typography>
       </CardContent>
+      <CardFooter>
+        <Button>Edit</Button>
+      </CardFooter>
     </Card>
   );
 }

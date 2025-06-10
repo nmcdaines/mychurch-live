@@ -8,4 +8,7 @@ contextBridge.exposeInMainWorld("api", {
   execute: (...args: Parameters<AsyncRemoteCallback>) => {
     return ipcRenderer.invoke("db:execute", ...args);
   },
+  macro: {
+    execute: (id: number) => console.log('macro:execute(id) not implemented', id)
+  }
 });

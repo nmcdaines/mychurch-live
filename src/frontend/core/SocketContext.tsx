@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import io  from "socket.io-client";
+import io from "socket.io-client";
 import {IAction} from "./actions";
+import { useQuery } from "@tanstack/react-query";
+import { database, schema } from "../db";
 
 const SocketStateContext = React.createContext<any>(undefined);
 const SocketDispatchContext = React.createContext<any>(undefined);
@@ -173,35 +175,25 @@ function useAtemState() {
 }
 
 function useDevices() {
-  const context = React.useContext(DevicesContext);
-  if (context === undefined) {
-    throw new Error('useDevices must be used within a SocketProvider');
-  }
-  return context;
+  return useQuery({
+    queryKey: ['devices'],
+    queryFn: async () => database.query.devicesTable.findMany()
+  })
 }
 
 function useMacros() {
-  const context = React.useContext(MacrosContext);
-  if (context === undefined) {
-    throw new Error('useMacros must be used within a SocketProvider');
-  }
-  return context;
+  return useQuery({
+    queryKey: ['macros'],
+    queryFn: async () =>  database.query.macrosTable.findMany()
+  })
 }
 
 function useShortcuts() {
-  const context = React.useContext(ShortcutsContext);
-  if (context === undefined) {
-    throw new Error('useShortcuts must be used within a SocketProvider');
-  }
-  return context;
+  return useQuery({
+    queryKey: ['shortcuts'],
+    queryFn: async () => database.query.shortcutsTable.findMany()
+  })
 }
 
-function useIsConnected() {
-  const context = React.useContext(IsConnectedContext);
-  if (context === undefined) {
-    throw new Error('useIsConnected must be used within a SocketProvider');
-  }
-  return context;
-}
 
-export { SocketProvider, useSocket, useSocketState, useAtemState, useDevices, useMacros, useShortcuts, useIsConnected }
+export { SocketProvider, useSocket, useSocketState, useAtemState, useDevices, useMacros, useShortcuts }

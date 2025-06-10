@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Typography, IconButton, Fab, CardActions } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
+import { MacroForm } from "./MacroForm";
+import { useSocket, useMacros } from "../../core/SocketContext";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
   CardContent,
-  Typography,
-  IconButton,
-  Fab,
-  CardActions,
-  Button
-} from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
-import AddIcon from "@material-ui/icons/Add";
-import { MacroForm } from "./MacroForm";
-import { useSocket, useMacros } from '../../core/SocketContext';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 
 interface IMacro {
   id: string;
@@ -28,50 +28,52 @@ interface IStep {
   properties: string;
 }
 
-
 function MacroViewItem({ macro, onEdit }: any) {
-  const socket = useSocket();
+  // const socket = useSocket();
 
   const { steps = [] } = macro;
 
   function run() {
-    socket?.emit('macro:execute:id', { id: macro.id })
+    // socket?.emit("macro:execute:id", { id: macro.id });
+    window.api.macro.execute(macro.id)
   }
 
   return (
     <Card style={{ marginBottom: 10 }}>
-      <CardHeader
-        action={
-          <IconButton>
-            <EditIcon onClick={onEdit}/>
-          </IconButton>
-        }
-        title={macro.name}
-        subheader={macro.type === 'camera' && 
-          <>
-            Pan: { (steps[0]?.properties?.pan || steps[1]?.properties?.pan) || 0 },
-            Tilt: { steps[0]?.properties?.tilt || steps[1]?.properties?.tilt || 0 },
-            Zoom: { ((10 / 16384) * (steps[0]?.properties?.zoom || steps[1]?.properties?.zoom || 0)).toFixed(1) }x
-          </>
-        }
-      />
+      <CardHeader>
+        <CardTitle>{macro.name}</CardTitle>
+        <CardDescription>
+          {macro.type === "camera" && (
+            <>
+              Pan: {steps[0]?.properties?.pan || steps[1]?.properties?.pan || 0}
+              , Tilt:{" "}
+              {steps[0]?.properties?.tilt || steps[1]?.properties?.tilt || 0},
+              Zoom:{" "}
+              {(
+                (10 / 16384) *
+                (steps[0]?.properties?.zoom || steps[1]?.properties?.zoom || 0)
+              ).toFixed(1)}
+              x
+            </>
+          )}
+        </CardDescription>
+      </CardHeader>
       <CardContent>
         <Typography variant="body1" color="textSecondary" component="p">
-          { macro.description }
+          {macro.description}
         </Typography>
       </CardContent>
-        {/* <Button
-          // onClick={run}
-        >
-          Delete
-        </Button> */}
-
-        <Button 
-          color="primary"
-          onClick={run}
-        >
+      <CardFooter className="space-x-2">
+        <Button color="primary" onClick={run}>
           Run <PlayArrowIcon />
         </Button>
+        <Button>
+          <EditIcon onClick={onEdit} />
+        </Button>
+        <Button variant="destructive">
+          Delete
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
@@ -79,35 +81,31 @@ function MacroViewItem({ macro, onEdit }: any) {
 export default function Macros() {
   const [isOpen, setIsOpen] = useState(false);
   const [initialState, setInitialState] = useState<any>({});
-  const [mode, setMode] = useState('create');
+  const [mode, setMode] = useState("create");
   const socket = useSocket();
-  const macros = useMacros();
-  
+  const { data: macros } = useMacros();
+
   function createMacro(macro: any) {
-    if (mode === 'edit') {
-      socket?.emit('macro:update', macro);
+    if (mode === "edit") {
+      socket?.emit("macro:update", macro);
       setIsOpen(false);
       return;
-    } 
+    }
 
-    socket?.emit('macro:create', macro);
+    socket?.emit("macro:create", macro);
     setIsOpen(false);
   }
 
   return (
     <div>
-
-      { Object.keys(macros).map((macroId) => {
-
+      {macros?.map((macro) => {
         return (
           <MacroViewItem
-            key={`macro-${macroId}`}
-            macro={macros[macroId]}
+            key={`macro-${macro.id}`}
+            macro={macro}
             onEdit={() => {
-              setMode('edit');
-              setInitialState({
-                ...macros[macroId],
-              });
+              setMode("edit");
+              setInitialState({ ...macro });
               setIsOpen(true);
             }}
             mode={mode}
@@ -115,7 +113,7 @@ export default function Macros() {
         );
       })}
 
-      <Fab
+      <Button
         color="primary"
         style={{ position: 'fixed', right: 16, bottom: 16 }}
         onClick={() => {
@@ -129,7 +127,7 @@ export default function Macros() {
         }}
       >
         <AddIcon />
-      </Fab>
+      </Button>
 
       <MacroForm
         isOpen={isOpen}

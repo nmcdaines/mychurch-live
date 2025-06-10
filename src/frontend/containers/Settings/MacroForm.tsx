@@ -1,22 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  Typography,
-  IconButton,
   Fab,
-  Dialog,
-  DialogTitle,
-  DialogContent, DialogContentText,
+   DialogContentText,
   TextField,
-  Button,
   DialogActions,
   Box,
   Paper,
-  TextFieldProps,
-  StandardTextFieldProps,
-  OutlinedTextFieldProps,
   Select,
   MenuItem,
   FormControl,
@@ -25,6 +14,16 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import { Formik, FieldArray } from "formik";
 import { useDevices } from "../../core/SocketContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
 
 const defaultTextFieldProps: any = {
   fullWidth: true,
@@ -42,18 +41,13 @@ interface IMacroFormProps {
 }
 
 export const MacroForm: React.FC<IMacroFormProps> = (props) => {
-  const devices = useDevices();
-  const deviceOptions = Object.keys(devices).map((id: string) => ({
-    id,
-    name: devices[id].name,
-  }));
+  const { data: devices } = useDevices();
 
   return (
     <Dialog
       open={props.isOpen}
-      fullWidth
-      maxWidth="sm"
     >
+       <DialogContent>
       <DialogTitle>
         {props.mode === 'edit' ? 'Edit' : 'Create'} Macro
         </DialogTitle>
@@ -112,7 +106,7 @@ export const MacroForm: React.FC<IMacroFormProps> = (props) => {
                       value={values.device || ''}
                       required
                     >
-                      {deviceOptions.map(({ id, name }) => (
+                      {devices?.map(({ id, name }) => (
                         <MenuItem value={id}>{name}</MenuItem>
                       ))}
                     </Select>
@@ -146,7 +140,7 @@ export const MacroForm: React.FC<IMacroFormProps> = (props) => {
                                       value={step.device || ''}
                                     >
                                       <MenuItem value={''}>Inherit</MenuItem>
-                                      {deviceOptions.map(({ id, name }) => (
+                                      {devices?.map(({ id, name }) => (
                                         <MenuItem value={id}>{name}</MenuItem>
                                       ))}
                                     </Select>
@@ -381,28 +375,29 @@ export const MacroForm: React.FC<IMacroFormProps> = (props) => {
                           </Box>
                         ))}
 
-                        <Fab
+                        <Button
                           variant="extended"
                           size="small"
                           color="primary"
                           onClick={() => arrayHelpers.push({})}
                         >
                           <AddIcon /> Add step
-                          </Fab>
+                          </Button>
                       </>
                     )}
                   />
 
                 </Box>
               </DialogContent>
-              <DialogActions>
+              <DialogFooter>
                 <Button color="primary" onClick={props.onCancel}>Cancel</Button>
                 <Button color="primary" type="submit">Save</Button>
-              </DialogActions>
+              </DialogFooter>
             </form>
           )
         }}
       </Formik>
+      </DialogContent>
     </Dialog>
   );
 }
