@@ -1,5 +1,5 @@
+import { Button } from '@/components/ui/button';
 import React from 'react';
-import { Button } from '@material-ui/core';
 
 interface IZoomButtonsProps {
   onT: any;
@@ -20,7 +20,6 @@ function DirectionalButtons ({ onT, onW }: IZoomButtonsProps) {
     <div style={{ margin: 10 }}>
       <div style={{ padding: 20, width: 140, height: 140, position: 'relative' }}>
         <Button
-          variant="contained"
           style={{ ...baseStyles, bottom: 'calc(50% + 10px)' }}
           onClick={onT}
         >
@@ -28,7 +27,6 @@ function DirectionalButtons ({ onT, onW }: IZoomButtonsProps) {
         </Button>
 
         <Button
-          variant="contained"
           style={{ ...baseStyles, top: 'calc(50% + 10px)' }}
           onClick={onW}
         >

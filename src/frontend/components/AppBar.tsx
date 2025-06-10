@@ -6,7 +6,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       zIndex: 2,
-      transform: 'translate(0px)'
+      transform: 'translate(0px)',
+      background: '#1e4376'
     },
     title: {
       flexGrow: 1,

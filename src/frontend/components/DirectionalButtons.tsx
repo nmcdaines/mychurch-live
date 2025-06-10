@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 import { ArrowUpward, ArrowDownward, ArrowBack, ArrowForward } from '@material-ui/icons';
+import { Button } from '@/components/ui/button';
 
 interface IDirectionButtonsProps {
   onUp: any;
@@ -31,7 +31,6 @@ function DirectionalButtons ({ onUp, onDown, onRight, onLeft }: IDirectionButton
         />
 
         <Button
-          variant="contained"
           style={{ ...baseStyles, top: 0, left: '50%', transform: 'translateX(-50%)' }}
           onClick={onUp}
         >
@@ -39,7 +38,6 @@ function DirectionalButtons ({ onUp, onDown, onRight, onLeft }: IDirectionButton
         </Button>
 
         <Button
-          variant="contained"
           style={{ ...baseStyles, bottom: 0, left: '50%', transform: 'translateX(-50%)' }}
           onClick={onDown}
         >
@@ -47,7 +45,6 @@ function DirectionalButtons ({ onUp, onDown, onRight, onLeft }: IDirectionButton
         </Button>
 
         <Button
-          variant="contained"
           style={{ ...baseStyles, top: '50%', left: 0, transform: 'translateY(-50%)' }}
           onClick={onLeft}
         >
@@ -55,7 +52,6 @@ function DirectionalButtons ({ onUp, onDown, onRight, onLeft }: IDirectionButton
         </Button>
 
         <Button
-          variant="contained"
           style={{ ...baseStyles, top: '50%', right: 0, transform: 'translateY(-50%)' }}
           onClick={onRight}
         >

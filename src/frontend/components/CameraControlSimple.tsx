@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 
 import { useSocket, useAtemState } from '../core/SocketContext';
 
-import { Button, TextField } from '@material-ui/core';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+import { TextField } from '@material-ui/core';
+// import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+// import ToggleButton from '@material-ui/lab/ToggleButton';
 import DirectionalButtons from './DirectionalButtons';
 import ZoomButtons from './ZoomButtons';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 
 interface ICameraControlSimple {
@@ -96,54 +97,56 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
       <div style={{ display: 'flex', padding: '20px 0' }}>
         <div>
           <div>Pan/Tilt Increment</div>
-          <ToggleButtonGroup
+          <ToggleGroup
             value={moveIncrement}
             exclusive
             onChange={handleIncrementChange}
+            type='single'
           >
-            <ToggleButton value={2} aria-label="left aligned">
+            <ToggleGroupItem value={2} aria-label="left aligned">
               2
-            </ToggleButton>
-            <ToggleButton value={5} aria-label="left aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={5} aria-label="left aligned">
               5
-            </ToggleButton>
-            <ToggleButton value={10} aria-label="left aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={10} aria-label="left aligned">
               10
-            </ToggleButton>
-            <ToggleButton value={30} aria-label="centered">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={30} aria-label="centered">
               30
-            </ToggleButton>
-            <ToggleButton value={50} aria-label="right aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={50} aria-label="right aligned">
               50
-            </ToggleButton>
-            <ToggleButton value={100} aria-label="right aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={100} aria-label="right aligned">
               100
-            </ToggleButton>
-            <ToggleButton value={250} aria-label="right aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={250} aria-label="right aligned">
               250
-            </ToggleButton>
-          </ToggleButtonGroup>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
 
         <div style={{ width: 30 }} />
 
         <div>
           <div>Zoom Increment</div>
-          <ToggleButtonGroup
+          <ToggleGroup
             value={zoomIncrement}
             exclusive
             onChange={handleZoomIncrement}
+            type='single'
           >
-            <ToggleButton value={410} aria-label="right aligned">
+            <ToggleGroupItem value={410} aria-label="right aligned">
               0.25x
-            </ToggleButton>
-            <ToggleButton value={819} aria-label="right aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={819} aria-label="right aligned">
               0.5x
-            </ToggleButton>
-            <ToggleButton value={1638} aria-label="right aligned">
+            </ToggleGroupItem>
+            <ToggleGroupItem value={1638} aria-label="right aligned">
               1x
-            </ToggleButton>
-          </ToggleButtonGroup>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
       </div>
       

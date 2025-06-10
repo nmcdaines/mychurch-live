@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Button, Container, TextField, Paper, Box, Typography, Grid } from '@material-ui/core';
+import { Container, TextField, Paper, Box, Typography, Grid } from '@material-ui/core';
 import { useSocket, useDevices, useAtemState, useMacros } from "../../core/SocketContext";
 import CameraControlSimple from '../../components/CameraControlSimple';
 import { CameraPresetForm } from '../../components/CameraPresetForm';
 import { CameraMacroCard } from '../../components/CameraMacroCard';
+import { Button } from "@/components/ui/button";
 
 
 function Camera() {
   const socket = useSocket();
-  const devices = useDevices();
+  const { data: devices } = useDevices();
   const states = useAtemState();
   const macros = useMacros();
 
@@ -66,21 +67,22 @@ function Camera() {
     <div style={{ paddingTop: 20 }}>
       <Container>
 
-        { Object.keys(devices).map((deviceId) => {
-          if (devices[deviceId].type !== 'birddog') { return null; }
+        { devices?.map((device) => {
+          console.log(device)
+          if (device.type !== 'birddog') { return <div>{device.type}</div>; }
 
           return (
-            <div key={`device-${deviceId}`}>
+            <div key={`device-${device.id}`}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h3">
-                  { devices[deviceId].name }
+                  { device.name }
                 </Typography>
 
                 <div>
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={openSavePreset(deviceId)}
+                    onClick={openSavePreset(device.id)}
                   >
                     Save Preset
                   </Button>
@@ -91,18 +93,16 @@ function Camera() {
                 <Paper>
                   <Box p={2}>
                     <CameraControlSimple
-                      deviceId={deviceId}
-                      name={devices[deviceId].name}
-                      {...devices[deviceId]}
-                      state={states[deviceId]}
+                      deviceId={device.id}
+                      name={device.name.name}
+                      {...device}
+                      state={states[device.id]}
                     />
                   </Box>
                 </Paper>
               </Box>
 
-              <Box mt={2}>
-                {/* <Paper> */}
-                  {/* <Box p={2}> */}
+              {/* <Box mt={2}>
                     <Typography variant="h4">
                       Presets
                     </Typography>
@@ -137,9 +137,7 @@ function Camera() {
                       onSubmit={onSave}
                       onCancel={() => setPresetFormOpen(false)}
                     />
-                  {/* </Box> */}
-                {/* </Paper> */}
-              </Box>
+              </Box> */}
 
 
             </div>
