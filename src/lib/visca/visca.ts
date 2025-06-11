@@ -20,7 +20,7 @@ export class ViscaDevice extends EventEmitter {
 	}
 
 	disconnect () {
-		this._socket.disconnect()
+		return this._socket.disconnect()
 	}
 
 	get address () {

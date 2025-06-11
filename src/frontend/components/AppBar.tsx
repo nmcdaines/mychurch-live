@@ -1,5 +1,5 @@
-  import {createStyles, makeStyles, Theme, AppBar, Toolbar, Typography} from "@material-ui/core";
-import { Button } from "@/components/ui/button";
+import {createStyles, makeStyles, Theme, AppBar, Toolbar, Typography} from "@material-ui/core";
+import {Button} from "@/components/ui/button";
 import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -54,17 +54,18 @@ export default function () {
         </div>
 
         <div className="space-x-2">
-          { links.map((link) => (
+          {links.map((link) => (
             <Link
+              key={link.to}
               to={link.to}
             >
-            <Button
-              key={`menu-link-${link.text}`}
-              color="inherit"
-              size="sm"
-            >
-              { link.text }
-            </Button>
+              <Button
+                key={`menu-link-${link.text}`}
+                color="inherit"
+                size="sm"
+              >
+                {link.text}
+              </Button>
             </Link>
           ))}
         </div>

@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { useSocket, useAtemState } from '../core/SocketContext';
+import { useSocket, useAtemState } from "../core/SocketContext";
 
-import { TextField } from '@material-ui/core';
-// import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-// import ToggleButton from '@material-ui/lab/ToggleButton';
-import DirectionalButtons from './DirectionalButtons';
-import ZoomButtons from './ZoomButtons';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-
+import { TextField } from "@material-ui/core";
+import DirectionalButtons from "./DirectionalButtons";
+import ZoomButtons from "./ZoomButtons";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface ICameraControlSimple {
   deviceId: string;
@@ -24,24 +21,29 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
   const [zoomIncrement, setZoomIncrement] = useState(1638);
   const [speed, setSpeed] = useState(4);
 
-  const socket = useSocket(); 
+  const socket = useSocket();
 
   const sendPanTitltCommand = ({ pan, tilt, panSpeed, tiltSpeed }: any) => {
+    console.log("sendPanTitlt", pan, tilt);
 
-    console.log('sendPanTitlt', pan, tilt);
-
-    socket?.emit('action:execute', {
+    socket?.emit("action:execute", {
       id: deviceId,
-      type: 'VISCA_SET_PAN_TILT',
+      type: "VISCA_SET_PAN_TILT",
       properties: {
         pan: (state?.pan || 0) + pan,
         panSpeed: panSpeed || 0,
         tilt: (state?.tilt || 0) + tilt,
         tiltSpeed: tiltSpeed || 0,
-      }
-    })
-  }
+      },
+    });
 
+    return window.api.device.execute(deviceId, "VISCA_SET_PAN_TILT", {
+      pan: (state?.pan || 0) + pan,
+      panSpeed: panSpeed || 0,
+      tilt: (state?.tilt || 0) + tilt,
+      tiltSpeed: tiltSpeed || 0,
+    });
+  };
 
   const onPan = (value: number) => () => {
     sendPanTitltCommand({
@@ -49,7 +51,7 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
       panSpeed: speed,
       tilt: 0,
     });
-  }
+  };
 
   const onTitlt = (value: number) => () => {
     sendPanTitltCommand({
@@ -57,30 +59,40 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
       tilt: value,
       tiltSpeed: speed,
     });
-  }
+  };
 
   const onZoom = (value: number) => () => {
-    socket?.emit('action:execute', {
+    socket?.emit("action:execute", {
       id: deviceId,
-      type: 'VISCA_SET_ZOOM',
+      type: "VISCA_SET_ZOOM",
       properties: {
         // max: 16384
-        zoom: (state.zoom || 0) + value
-      }
-    })
-  }
+        zoom: (state.zoom || 0) + value,
+      },
+    });
 
-  const handleIncrementChange = (event: React.MouseEvent<HTMLElement>, newIncrement: number) => {
+    window.api.device.execute(deviceId, "VISCA_SET_ZOOM", {
+      zoom: (state.zoom || 0) + value,
+    });
+  };
+
+  const handleIncrementChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newIncrement: number,
+  ) => {
     setMoveIncrement(newIncrement);
-  }
+  };
 
-  const handleZoomIncrement = (event: React.MouseEvent<HTMLElement>, newIncrement: number) => {
+  const handleZoomIncrement = (
+    event: React.MouseEvent<HTMLElement>,
+    newIncrement: number,
+  ) => {
     setZoomIncrement(newIncrement);
-  }
+  };
 
   return (
     <div>
-      <div style={{ display: 'flex', padding: '20px 0' }}>
+      <div style={{ display: "flex", padding: "20px 0" }}>
         <DirectionalButtons
           onUp={onTitlt(moveIncrement)}
           onDown={onTitlt(moveIncrement * -1)}
@@ -94,14 +106,14 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
         />
       </div>
 
-      <div style={{ display: 'flex', padding: '20px 0' }}>
+      <div style={{ display: "flex", padding: "20px 0" }}>
         <div>
           <div>Pan/Tilt Increment</div>
           <ToggleGroup
             value={moveIncrement}
             exclusive
             onChange={handleIncrementChange}
-            type='single'
+            type="single"
           >
             <ToggleGroupItem value={2} aria-label="left aligned">
               2
@@ -135,7 +147,7 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
             value={zoomIncrement}
             exclusive
             onChange={handleZoomIncrement}
-            type='single'
+            type="single"
           >
             <ToggleGroupItem value={410} aria-label="right aligned">
               0.25x
@@ -149,8 +161,8 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
           </ToggleGroup>
         </div>
       </div>
-      
-      <div style={{ display: 'flex', padding: '20px 0' }}>
+
+      <div style={{ display: "flex", padding: "20px 0" }}>
         <div>
           <TextField
             variant="filled"
@@ -177,9 +189,8 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
           />
         </div>
       </div>
-
     </div>
-  )
+  );
 }
 
 export default CameraControlSimple;
