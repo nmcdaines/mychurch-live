@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import { runMigrate, execute } from "./backend/db";
+import deviceService from "./backend/service";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -59,6 +60,10 @@ app.whenReady().then(async () => {
   ipcMain.on("ping", () => console.log("pong"));
   ipcMain.handle("db:execute", execute);
 
+  // ipcMain.handle("device:connect", )
+
   await runMigrate();
   createWindow();
+
+  await deviceService.onStartup()
 });

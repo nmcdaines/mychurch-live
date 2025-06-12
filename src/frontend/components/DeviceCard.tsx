@@ -20,6 +20,10 @@ function DeviceCard({ productIdentifier, device }: any) {
         </Typography>
       </CardContent>
       <CardFooter className="space-x-2 justify-end">
+        <div className="space-x-2 mr-auto">
+          <Button>Connect</Button>
+          <Button>Disconnect</Button>
+        </div>
         <Button>Edit</Button>
         <Button variant="destructive">Delete</Button>
       </CardFooter>
