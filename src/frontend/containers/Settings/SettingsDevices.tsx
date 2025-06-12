@@ -11,12 +11,8 @@ function SettingsDevices() {
 
   const { data: devices } = useDevices()
 
-  console.log(devices);
-
   return (
-    <div>
-      <Grid container spacing={2}>
-        <Grid item md={8}>
+    <div className="flex flex-col space-y-2">
           { devices?.map((device) => {
             return (
               <div key={`device-card-${device.id}`} className="mb-5">
@@ -27,8 +23,6 @@ function SettingsDevices() {
               </div>
             );
           })}
-        </Grid>
-      </Grid>
     </div>
   );
 }

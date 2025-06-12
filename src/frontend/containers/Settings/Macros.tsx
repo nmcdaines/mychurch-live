@@ -3,7 +3,7 @@ import { Typography, IconButton, Fab, CardActions } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import { MacroForm } from "./MacroForm";
-import { useSocket, useMacros } from "../../core/SocketContext";
+import {useSocket, useMacros, useCreateMacro, useDeleteMacro} from "../../core/SocketContext";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
+import ConfirmDeleteModal from "@/components/confirm-delete-modal";
 
 interface IMacro {
   id: string;
@@ -29,6 +30,7 @@ interface IStep {
 }
 
 function MacroViewItem({ macro, onEdit }: any) {
+  const { mutate: onDeleteMacro } = useDeleteMacro()
   // const socket = useSocket();
 
   const { steps = [] } = macro;
@@ -70,29 +72,40 @@ function MacroViewItem({ macro, onEdit }: any) {
         <Button>
           <EditIcon onClick={onEdit} />
         </Button>
-        <Button variant="destructive">
-          Delete
-        </Button>
+
+        <ConfirmDeleteModal
+          entityType="Macro"
+          id={macro.id}
+          deleteFn={onDeleteMacro}
+        >
+          <Button variant="destructive">
+            Delete
+          </Button>
+        </ConfirmDeleteModal>
       </CardFooter>
     </Card>
   );
 }
 
 export default function Macros() {
+  const { mutate: createMacroMutation } = useCreateMacro()
+
   const [isOpen, setIsOpen] = useState(false);
   const [initialState, setInitialState] = useState<any>({});
   const [mode, setMode] = useState("create");
   const socket = useSocket();
   const { data: macros } = useMacros();
 
-  function createMacro(macro: any) {
+  async function createMacro(macro: any) {
+
+
     if (mode === "edit") {
       socket?.emit("macro:update", macro);
       setIsOpen(false);
       return;
     }
 
-    socket?.emit("macro:create", macro);
+    await createMacroMutation(macro);
     setIsOpen(false);
   }
 

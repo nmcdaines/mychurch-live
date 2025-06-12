@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, {useMemo, useState} from "react";
 import {
   Fab,
-   DialogContentText,
+  DialogContentText,
   TextField,
   DialogActions,
   Box,
@@ -12,18 +12,17 @@ import {
   InputLabel,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { Formik, FieldArray } from "formik";
-import { useDevices } from "../../core/SocketContext";
+import {Formik, FieldArray} from "formik";
+import {useDevices} from "../../core/SocketContext";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
+import {FormField, FormSelectField} from "@/components/form-field";
+import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 
 const defaultTextFieldProps: any = {
   fullWidth: true,
@@ -41,363 +40,211 @@ interface IMacroFormProps {
 }
 
 export const MacroForm: React.FC<IMacroFormProps> = (props) => {
-  const { data: devices } = useDevices();
+  const {data: devices} = useDevices();
 
   return (
     <Dialog
       open={props.isOpen}
     >
-       <DialogContent>
-      <DialogTitle>
-        {props.mode === 'edit' ? 'Edit' : 'Create'} Macro
+      <DialogContent className="max-h-[calc(100vh-20px)] overflow-scroll">
+        <DialogTitle>
+          {props.mode === 'edit' ? 'Edit' : 'Create'} Macro
         </DialogTitle>
 
 
-      <Formik
-        initialValues={props.initialValues}
-        onSubmit={props.onSubmit}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-        }) => {
-          const steps = values.steps || [];
+        <Formik
+          initialValues={props.initialValues}
+          onSubmit={props.onSubmit}
+        >
+          {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => {
+            const steps = values.steps || [];
 
-          return (
-            <form onSubmit={handleSubmit}>
-              <DialogContent>
-                <DialogContentText>
-                  Insert a description about how macros work.
-                </DialogContentText>
-                <TextField
-                  {...defaultTextFieldProps}
+            return (
+              <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+                <FormField
                   label="Name"
                   name="name"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.name}
-                  autoFocus
                 />
-                <Box mt={1}>
-                  <TextField
-                    {...defaultTextFieldProps}
-                    label="Description"
-                    name="description"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.description}
-                  />
-                </Box>
-                <Box mt={1}>
-                  <FormControl {...defaultTextFieldProps}>
-                    <InputLabel required>
-                      Device
-                      </InputLabel>
-                    <Select
-                      label="Device"
-                      name="device"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.device || ''}
-                      required
-                    >
-                      {devices?.map(({ id, name }) => (
-                        <MenuItem value={id}>{name}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
 
-                <Box mt={2}>
+                <FormField label="Description" name="description"/>
+
+                <div className="mt-2 space-y-6">
                   <FieldArray
                     name="steps"
                     render={arrayHelpers => (
                       <>
                         {steps.map((step: any, index: number) => (
-                          <Box
+                          <div
                             key={`step-${index}`}
-                            mb={2}
                           >
-                            <Paper variant="outlined" style={{ position: 'relative', }}>
-                              <div style={{ position: 'absolute', left: 8, top: -10, background: '#FFF', padding: '0px 8px', color: 'rgba(0,0,0,0.5)', fontSize: 14 }}>Step {index}</div>
-                              <Box p={2}>
+                            <Card className="relative">
+                              <CardHeader>Step {index + 1}</CardHeader>
 
-                                <Box mt={1}>
-                                  <FormControl {...defaultTextFieldProps}>
-                                    <InputLabel>
-                                      Device
-                                      </InputLabel>
-                                    <Select
-                                      label="Device"
-                                      name={`steps.${index}.device`}
-                                      onBlur={handleBlur}
-                                      onChange={handleChange}
-                                      value={step.device || ''}
-                                    >
-                                      <MenuItem value={''}>Inherit</MenuItem>
-                                      {devices?.map(({ id, name }) => (
-                                        <MenuItem value={id}>{name}</MenuItem>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                </Box>
+                              <CardContent className="flex flex-col space-y-6">
 
-                                <Box mt={1}>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    label="Delay"
-                                    margin="dense"
-                                    name={`steps.${index}.delay`}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={step.delay}
-                                    required
-                                  />
-                                </Box>
+                                <FormField label="Delay" name={`steps.${index}.delay`}/>
+
+                                <div className="grid grid-cols-2 gap-2">
+                                  <FormSelectField label="Device" name={`steps.${index}.device`} options={devices.map(
+                                    ({id, name}) => ({value: id, label: name})
+                                  )}/>
 
 
+                                  <FormSelectField label="Command" name={`steps.${index}.command`} required options={[
+                                    {value: "SET_PROGRAM", label: "Set Program Input"},
+                                    {value: "SET_PREVIEW", label: "Set Preview Input"},
+                                    {value: "SET_PIP", label: "Set Picture In Picture"},
+                                    {value: "TRANSITION_AUTO", label: "Transition AUTO"},
+                                    {value: "TRANSITION_CUT", label: "Transition CUT"},
+                                    {value: "VISCA_SET_PAN_TILT", label: "Visca Set Pan Tilt"},
+                                    {value: "VISCA_SET_ZOOM", label: "Visca Set Zoom"},
+                                  ]}/>
+                                </div>
 
-                                <Box mt={1}>
-                                  <FormControl {...defaultTextFieldProps}>
-                                    <InputLabel required>
-                                      Command
-                                      </InputLabel>
-                                    <Select
-                                      label="Command"
-                                      name={`steps.${index}.command`}
-                                      onBlur={handleBlur}
-                                      onChange={handleChange}
-                                      value={step.command || ''}
-                                      required
-                                    >
-                                      <MenuItem value="SET_PROGRAM">Set Program Input</MenuItem>
-                                      <MenuItem value="SET_PREVIEW">Set Preview Input</MenuItem>
-                                      <MenuItem value="SET_PIP">Set Picture In Picture</MenuItem>
-                                      <MenuItem value="TRANSITION_AUTO">Transition AUTO</MenuItem>
-                                      <MenuItem value="TRANSITION_CUT">Transition CUT</MenuItem>
-                                      <MenuItem value="VISCA_SET_PAN_TILT">Visca Set Pan Tilt</MenuItem>
-                                      <MenuItem value="VISCA_SET_ZOOM">Visca Set Zoom</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                </Box>
-                                <div>Properties</div>
-
-                                {( step.command === 'VISCA_SET_PAN_TILT') &&
-                                  <Box mt={1}>
-                                    <TextField
-                                      fullWidth
-                                      variant="outlined"
-                                      label="Pan"
-                                      margin="dense"
-                                      name={`steps.${index}.properties.pan`}
-                                      onBlur={handleBlur}
-                                      onChange={handleChange}
-                                      value={step.properties?.pan || 0}
-                                      required={(
-                                        step.command === 'VISCA_SET_PAN_TILT'
-                                      )}
-                                    />
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Pan Speed"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.panSpeed`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.panSpeed || 0}
-                                        required={(
-                                          step.command === 'VISCA_SET_PAN_TILT'
-                                        )}
-                                      />
-                                    </Box>
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Tilt"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.tilt`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.tilt || 0}
-                                        required={(
-                                          step.command === 'VISCA_SET_PAN_TILT'
-                                        )}
-                                      />
-                                    </Box>
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Tilt Speed"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.tiltSpeed`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.tiltSpeed || 0}
-                                        required={(
-                                          step.command === 'VISCA_SET_PAN_TILT'
-                                        )}
-                                      />
-                                    </Box>
-                                  </Box>
-                                }
-
-                                {( step.command === 'VISCA_SET_ZOOM' ) &&
-                                  <Box mt={1}>
-                                    <TextField
-                                      fullWidth
-                                      variant="outlined"
-                                      label="Zoom"
-                                      margin="dense"
-                                      name={`steps.${index}.properties.zoom`}
-                                      onBlur={handleBlur}
-                                      onChange={handleChange}
-                                      value={step.properties?.zoom || 0}
-                                      required={(
-                                        step.command === 'VISCA_SET_ZOOM'
-                                      )}
-                                    />
-                                  </Box>
-                                }
-
-                                {(step.command != 'SET_PIP' && step.command != 'VISCA_SET_PAN_TILT' && step.command != 'VISCA_SET_ZOOM' ) &&
-                                  <Box mt={1}>
-                                    <TextField
-                                      fullWidth
-                                      variant="outlined"
-                                      label="Input"
-                                      margin="dense"
-                                      name={`steps.${index}.properties.input`}
-                                      onBlur={handleBlur}
-                                      onChange={handleChange}
-                                      value={step.properties?.input || ''}
-                                      required={(
-                                        step.command === 'SET_PROGRAM' ||
-                                        step.command === 'SET_PREVIEW'
-                                      )}
-                                    />
-                                  </Box>
-                                }
-
-                                {step.command === 'SET_PIP' &&
-                                  <>
-                                    <Box mt={1}>
-                                      <FormControl {...defaultTextFieldProps}>
-                                        <InputLabel>
-                                          Command
-                                        </InputLabel>
-                                        <Select
-                                          label="Command"
-                                          name={`steps.${index}.properties.direction`}
-                                          onBlur={handleBlur}
-                                          onChange={handleChange}
-                                          value={step.properties?.direction || ''}
-                                        >
-                                          <MenuItem value="ON">On</MenuItem>
-                                          <MenuItem value="OFF">Off</MenuItem>
-                                        </Select>
-                                      </FormControl>
-                                    </Box>
-
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Position X"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.positionX`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.positionX || ''}
-                                      />
-                                    </Box>
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Position Y"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.positionY`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.positionY || ''}
-                                      />
-                                    </Box>
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Size X"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.sizeX`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.sizeX || ''}
-                                      />
-                                    </Box>
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Size Y"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.sizeY`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.sizeY || ''}
-                                      />
-                                    </Box>
-                                    <Box mt={1}>
-                                      <TextField
-                                        fullWidth
-                                        variant="outlined"
-                                        label="Source"
-                                        margin="dense"
-                                        name={`steps.${index}.properties.source`}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={step.properties?.source || ''}
-                                      />
-                                    </Box>
-                                  </>
-                                }
-                              </Box>
-                            </Paper>
-                          </Box>
+                                {Boolean(step.command) && <div className="mt-8">Properties</div>}
+                                {renderStepProperties(step, index)}
+                              </CardContent>
+                            </Card>
+                          </div>
                         ))}
 
                         <Button
-                          variant="extended"
-                          size="small"
+                          variant="secondary"
                           color="primary"
                           onClick={() => arrayHelpers.push({})}
+                          type="button"
                         >
-                          <AddIcon /> Add step
-                          </Button>
+                          <AddIcon/> Add step
+                        </Button>
                       </>
                     )}
                   />
 
-                </Box>
-              </DialogContent>
-              <DialogFooter>
-                <Button color="primary" onClick={props.onCancel}>Cancel</Button>
-                <Button color="primary" type="submit">Save</Button>
-              </DialogFooter>
-            </form>
-          )
-        }}
-      </Formik>
+                </div>
+                <DialogFooter>
+                  <Button color="primary" onClick={props.onCancel}>Cancel</Button>
+                  <Button color="primary" type="submit">Save</Button>
+                </DialogFooter>
+              </form>
+            )
+          }}
+        </Formik>
       </DialogContent>
     </Dialog>
   );
+}
+
+const getCommands = (type: string) => {
+  if (type === 'birddog') {
+    return [
+      {value: "VISCA_SET_PAN_TILT", label: "Visca Set Pan Tilt"},
+      {value: "VISCA_SET_ZOOM", label: "Visca Set Zoom"},
+    ]
+  }
+
+  if (type === 'atem') {
+    return [
+      {value: "SET_PROGRAM", label: "Set Program Input"},
+      {value: "SET_PREVIEW", label: "Set Preview Input"},
+      {value: "SET_PIP", label: "Set Picture In Picture"},
+      {value: "TRANSITION_AUTO", label: "Transition AUTO"},
+      {value: "TRANSITION_CUT", label: "Transition CUT"},
+    ]
+  }
+
+  return []
+}
+
+function renderStepProperties(step: any, index: number) {
+  if (!step.command) return null;
+
+  if (step.command === 'VISCA_SET_PAN_TILT') {
+    return (
+      <div className="space-y-2">
+        <FormField
+          label="Pan"
+          name={`steps.${index}.properties.pan`}
+        />
+        <FormField
+          label="Pan Speed"
+          name={`steps.${index}.properties.panSpeed`}
+        />
+        <FormField
+          label="Tilt"
+          name={`steps.${index}.properties.tilt`}
+        />
+        <FormField
+          label="Tilt Speed"
+          name={`steps.${index}.properties.tiltSpeed`}
+        />
+      </div>
+    )
+  }
+
+  if (step.command === 'VISCA_SET_ZOOM') {
+    return (
+      <div className="space-y-2">
+        <FormField
+          label="Zoom"
+          name={`steps.${index}.properties.zoom`}
+        />
+      </div>
+    )
+  }
+
+  if (step.command != 'SET_PIP' && step.command != 'VISCA_SET_PAN_TILT' && step.command != 'VISCA_SET_ZOOM') {
+    return (
+      <div className="space-y-2">
+        <FormField
+          label="Input"
+          name={`steps.${index}.properties.input`}
+        />
+      </div>
+    )
+  }
+
+  if (step.command === 'SET_PIP') {
+    return (
+      <div className="space-y-4">
+        <FormSelectField label="Direction" name={`steps.${index}.properties.direction`}
+                         required options={[
+          {value: "ON", label: "On"},
+          {value: "OFF", label: "Off"},
+        ]}/>
+
+        <div className="grid grid-cols-2 gap-2">
+          <FormField
+            label="Position X"
+            name={`steps.${index}.properties.positionX`}
+          />
+          <FormField
+            label="Position Y"
+            name={`steps.${index}.properties.positionY`}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <FormField
+            label="Size X"
+            name={`steps.${index}.properties.sizeX`}
+          />
+          <FormField
+            label="Size Y"
+            name={`steps.${index}.properties.sizeY`}
+          />
+        </div>
+        <FormField
+          label="Source"
+          name={`steps.${index}.properties.source`}
+        />
+      </div>
+    )
+  }
 }

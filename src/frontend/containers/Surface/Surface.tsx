@@ -58,9 +58,6 @@ function Surface() {
         const { inputs, video } = atemState[deviceId] || {};
         const me = video.mixEffects[0];
 
-        console.log(me);
-        // console.log(inputs);
-
         const inputsIds = Object.keys(inputs).filter((id) => parseInt(id) < 4000);
 
 

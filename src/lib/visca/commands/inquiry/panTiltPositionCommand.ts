@@ -13,9 +13,6 @@ export class PanTiltPositionCommand extends ViscaInquiryCommand {
 	}
 
 	deserialize(payload: Buffer): any {
-
-		console.log(payload);
-
 		// PAN: MIN/MAX = -2978/372
 		// TILT: MIN/MAX = -1880/2216
 

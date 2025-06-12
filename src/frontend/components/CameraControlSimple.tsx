@@ -24,8 +24,6 @@ function CameraControlSimple({ deviceId, state }: ICameraControlSimple) {
   const socket = useSocket();
 
   const sendPanTitltCommand = ({ pan, tilt, panSpeed, tiltSpeed }: any) => {
-    console.log("sendPanTitlt", pan, tilt);
-
     socket?.emit("action:execute", {
       id: deviceId,
       type: "VISCA_SET_PAN_TILT",

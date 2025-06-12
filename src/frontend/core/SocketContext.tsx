@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { IAction } from "./actions";
-import { useQuery } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { database, schema } from "../db";
+import {eq} from "drizzle-orm";
 
 const SocketStateContext = React.createContext<any>(undefined);
 const SocketDispatchContext = React.createContext<any>(undefined);
@@ -66,7 +67,6 @@ function SocketProvider({ children }: any) {
 
     socket.on("connect", () => {
       setIsConnected(true);
-      console.log("socket -> connected");
 
       // SOCKET INITIALISED
       socket.emit("device:list");
@@ -80,17 +80,14 @@ function SocketProvider({ children }: any) {
     });
 
     socket.on("response:device:state:initial", (payload: any) => {
-      console.log("socket -> response:device:state:initial", payload);
       dispatchDeviceState({ type: "all", state: { ...payload } });
     });
 
     socket.on("state:change", (payload: any) => {
-      console.log("socket -> response:state:change", payload);
       dispatchDeviceState({ type: "individual", ...payload });
     });
 
     socket.on("response:device:list", (payload: any) => {
-      console.log("socket -> response:device:list", payload);
       setDevices(
         payload.reduce((acc: any, val: any) => {
           return {
@@ -102,8 +99,6 @@ function SocketProvider({ children }: any) {
     });
 
     socket.on("response:macro:list", (payload: any) => {
-      console.log("socket -> response:macro:list", payload);
-
       setMacros(
         payload.reduce((acc: any, val: any) => {
           return {
@@ -115,7 +110,6 @@ function SocketProvider({ children }: any) {
     });
 
     socket.on("response:shortcut:list", (payload: any) => {
-      console.log("socket -> response:shortcut:list", payload);
 
       setShortcuts(
         payload.reduce((acc: any, val: any) => {
@@ -203,6 +197,32 @@ function useShortcuts() {
     queryKey: ["shortcuts"],
     queryFn: async () => database.query.shortcutsTable.findMany(),
   });
+}
+
+export function useCreateMacro() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (macro) => {
+      await database.insert(schema.macrosTable).values({
+        ...macro,
+      })
+    },
+    onSuccess: (result, variables, context) => {
+      queryClient.refetchQueries(['macros'])
+    }
+  })
+}
+
+export function useDeleteMacro() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (macroId: number) => {
+      await database.delete(schema.macrosTable).where(eq(schema.macrosTable.id, macroId));
+    },
+    onSuccess: (result, variables, context) => {
+      queryClient.refetchQueries(['macros'])
+    }
+  })
 }
 
 export {

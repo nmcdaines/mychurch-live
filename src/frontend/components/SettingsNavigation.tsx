@@ -12,8 +12,8 @@ import CallToActionIcon from '@material-ui/icons/CallToAction';
 import AppsIcon from '@material-ui/icons/Apps';
 
 
-import { Link, useParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import {Link, useParams} from "react-router-dom";
+import {Button} from "@/components/ui/button";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,18 +26,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function ListItemLink(props: ListItemProps<Link, { button?: true, to: string }>) {
-  return <Link to={props.to}>
-    <Button variant="secondar" className="w-full">
-      {props.children}
-    </Button>
-    </Link>;
+  return (
+    <Link to={props.to}>
+      <Button variant="secondary" className="w-full">
+        {props.children}
+      </Button>
+    </Link>
+  );
 }
 
 function SettingsItem({name, icon, onClick}: any) {
   const IconComponent = icon;
   const itemId = String(name).toLowerCase();
 
-  let { settingId } = useParams();
+  let {settingId} = useParams();
 
   return (
     <ListItemLink
@@ -47,11 +49,9 @@ function SettingsItem({name, icon, onClick}: any) {
       to={`/settings/${itemId}`}
     >
       {!!IconComponent &&
-      <ListItemIcon>
           <IconComponent/>
-      </ListItemIcon>
       }
-      <ListItemText primary={name}/>
+      <div className="w-full text-left ml-2">{name}</div>
     </ListItemLink>
   );
 }
@@ -60,16 +60,14 @@ export default function SettingsNavigation() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <List component="nav">
-        <SettingsItem name="Devices" icon={DeviceHubIcon}/>
-        <SettingsItem name="Livestream" icon={LiveTvIcon}/>
-      </List>
-      <Divider/>
-      <List component="nav">
-        <SettingsItem name="Macros" icon={CallToActionIcon}/>
-        <SettingsItem name="Shortcuts" icon={AppsIcon}/>
-      </List>
+    <div className="flex flex-col w-full space-y-2">
+      <SettingsItem name="Devices" icon={DeviceHubIcon}/>
+      <SettingsItem name="Livestream" icon={LiveTvIcon}/>
+      <div>
+        <Divider/>
+      </div>
+      <SettingsItem name="Macros" icon={CallToActionIcon}/>
+      <SettingsItem name="Shortcuts" icon={AppsIcon}/>
     </div>
   );
 }

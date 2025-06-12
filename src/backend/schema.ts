@@ -2,11 +2,11 @@ import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 import { relations } from 'drizzle-orm';
 
 export type Step = {
-    device: string;
     order: number;
     delay: number;
+    device: string;
     command: string;
-    properties: any;
+    properties: Record<string, unknown>;
 }
 
 export const devicesTable = sqliteTable("devices", {

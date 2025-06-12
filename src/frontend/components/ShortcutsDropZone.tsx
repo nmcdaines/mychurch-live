@@ -11,8 +11,6 @@ export function ShortcutsDropZone(props: any) {
   const [collectedProps, drop] = useDrop({
     accept: 'macro',
     drop: (item: any, monitor) => {
-      console.log(item, monitor);
-
       socket?.emit('shortcut:create', {
         page: props.page,
         slot: props.slot, 
@@ -21,8 +19,6 @@ export function ShortcutsDropZone(props: any) {
       })
     }
   });
-
-  console.log(props);
 
   function run() {
     socket?.emit('macro:execute:id', { id: props.shortcut.value })

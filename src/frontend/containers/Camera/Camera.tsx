@@ -29,7 +29,6 @@ function Camera() {
   const [tempState, setTempState] = useState<any>({});
 
   const openSavePreset = (deviceId: string) => () => {
-    console.log(deviceId, states[deviceId]);
     setTempState({
       ...states[deviceId],
       deviceId,
@@ -77,7 +76,6 @@ function Camera() {
     <div style={{ paddingTop: 20 }}>
       <Container>
         {devices?.map((device) => {
-          console.log(device);
           if (device.type !== "birddog") {
             return <div>{device.type}</div>;
           }
